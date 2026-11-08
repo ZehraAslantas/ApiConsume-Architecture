@@ -1,0 +1,23 @@
+﻿@model ContactApp.Contracts.DTOs.NewsArticleDto
+<div class="mb-3">
+	<a asp-controller="News" asp-action="Index" class="btn btn-link">Tüm Haberler</a>
+	@*index sayfasına geri dönmen için Tüm haberler butonu koydu*@
+
+	<h1 class="h3 my-2">@Model.Title</h1>
+	<div class="text-muted">
+		<span>Yazar: <strong>@Model.Authorname</strong></span>
+		<span class="ms-3">Durum: <span class="badge bg-secondary">@Model.Status</span> </span>
+		<span>Yazar: <strong>@Model.Authorname</strong></span>
+		<span>Yazar: <strong>@(Model.PublishedAt?.ToString("yyyy-MM-dd HH:mm") ?? "-") </strong></span>
+	</div>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.Summary)) //özet bilgisi vardı onun kontrolü
+{
+	<p class="lead">@Model.Summary</p>
+}
+<article class="mt-3">
+	<div>
+		@Html.Raw(Model.Content)
+	</div>
+</article>
