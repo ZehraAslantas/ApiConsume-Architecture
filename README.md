@@ -55,6 +55,7 @@ Each article has a title, a unique URL slug, a summary, content, a publish date,
 - Validation with **FluentValidation** (e.g. the due date cannot be in the past)
 - Swappable data layer through the `ITodoStore` interface: in-memory storage in Development, SQL Server (EF Core) in Production
 - `/News` page that lists articles from the News API and shows their details
+- Error handling and logging so the app keeps working when the API is unreachable
 
 ## 📇 ContactApp
 
