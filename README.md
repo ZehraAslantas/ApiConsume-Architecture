@@ -1,16 +1,16 @@
 # ApiConsume-Architecture
 
-Bir **ASP.NET Core Web API**'nin, iki ayrı full-stack web uygulaması tarafından **HttpClient** ve **DTO**'lar aracılığıyla tüketildiği çok projeli bir .NET 9 çözümü.
+A multi-project .NET 9 solution in which an **ASP.NET Core Web API** is consumed by two separate full-stack web applications through **HttpClient** and **DTOs**.
 
-Çözüm üç projeden oluşur:
+The solution consists of three projects:
 
-| Proje | Tür | Açıklama |
+| Project | Type | Description |
 |---|---|---|
-| **News** | ASP.NET Core Web API | Haberlerin yönetildiği RESTful API |
-| **TodoApp** | ASP.NET Core Razor Pages | Görev takip uygulaması + API'den gelen haberler |
-| **ContactApp** | ASP.NET Core MVC | Rehber (kişi yönetimi) uygulaması + API'den gelen haberler |
+| **News** | ASP.NET Core Web API | RESTful API for managing news articles |
+| **TodoApp** | ASP.NET Core Razor Pages | Task tracking app + news from the API |
+| **ContactApp** | ASP.NET Core MVC | Contact management app + news from the API |
 
-## 🏗️ Mimari
+## 🏗️ Architecture
 
 ```mermaid
 flowchart LR
@@ -23,50 +23,50 @@ flowchart LR
     K["ContactApp<br/>(MVC)"] -- "HttpClient + DTO" --> C
 ```
 
-İki istemci uygulama da API'ye doğrudan veritabanı üzerinden değil, HTTP istekleriyle bağlanır. API'den gelen JSON verisi, her uygulamanın kendi `NewsArticleDto` sınıfına dönüştürülür. Böylece uygulamalar API'nin iç yapısına bağımlı olmaz.
+Both client applications connect to the API over HTTP rather than accessing its database directly. The JSON returned by the API is mapped to each application's own `NewsArticleDto` class, so the clients do not depend on the API's internal models.
 
 ## 📰 News API
 
-Haberler için CRUD işlemleri sunan RESTful API.
+A RESTful API that provides CRUD operations for news articles.
 
-| Metot | Uç nokta | Açıklama | Başarılı yanıt |
+| Method | Endpoint | Description | Success response |
 |---|---|---|---|
-| `GET` | `/api/NewsArticles` | Tüm haberleri listeler (yayın tarihine göre yeniden eskiye) | `200 OK` |
-| `GET` | `/api/NewsArticles/{id}` | Tek bir haberi getirir | `200 OK` / `404 Not Found` |
-| `POST` | `/api/NewsArticles` | Yeni haber ekler | `201 Created` |
-| `PUT` | `/api/NewsArticles/{id}` | Haberi günceller | `204 No Content` |
-| `DELETE` | `/api/NewsArticles/{id}` | Haberi siler | `204 No Content` |
+| `GET` | `/api/NewsArticles` | Lists all articles (newest first by publish date) | `200 OK` |
+| `GET` | `/api/NewsArticles/{id}` | Returns a single article | `200 OK` / `404 Not Found` |
+| `POST` | `/api/NewsArticles` | Creates a new article | `201 Created` |
+| `PUT` | `/api/NewsArticles/{id}` | Updates an article | `204 No Content` |
+| `DELETE` | `/api/NewsArticles/{id}` | Deletes an article | `204 No Content` |
 
-Her haberde başlık, benzersiz URL kısaltması (slug), özet, içerik, yayın tarihi, yazar ve yayın durumu (`Draft` / `Published` / `Archived`) bulunur.
+Each article has a title, a unique URL slug, a summary, content, a publish date, an author and a publication status (`Draft` / `Published` / `Archived`).
 
-**Öne çıkanlar:**
-- Repository Pattern ve Dependency Injection ile katmanlı yapı
-- Entity Framework Core (Code-First): migration'lar, Fluent API konfigürasyonu ve seed data
-- Slug alanı için unique index
-- Model doğrulama ve uygun HTTP durum kodları (`201`, `204`, `400`, `404`)
-- `CancellationToken` destekli asenkron işlemler
-- Swagger ile API dokümantasyonu
-- Uygulama başlarken bekleyen migration'ların otomatik uygulanması
+**Highlights:**
+- Layered structure with the Repository Pattern and Dependency Injection
+- Entity Framework Core (Code-First): migrations, Fluent API configuration and seed data
+- Unique index on the slug field
+- Model validation and appropriate HTTP status codes (`201`, `204`, `400`, `404`)
+- Asynchronous operations with `CancellationToken` support
+- API documentation with Swagger
+- Pending migrations are applied automatically on startup
 
 ## ✅ TodoApp
 
-- Görev ekleme, listeleme, düzenleme ve silme (CRUD)
-- Görevlere öncelik (Düşük / Orta / Yüksek), son tarih ve tamamlanma durumu
-- **FluentValidation** ile doğrulama (ör. son tarih geçmiş bir tarih olamaz)
-- `ITodoStore` arayüzü sayesinde değiştirilebilir veri katmanı: geliştirme ortamında bellek içi depolama, Production ortamında SQL Server (EF Core)
-- `/News` sayfasında News API'den gelen haberlerin listesi ve detayı
+- Create, list, edit and delete tasks (CRUD)
+- Task priority (Low / Medium / High), due date and completion status
+- Validation with **FluentValidation** (e.g. the due date cannot be in the past)
+- Swappable data layer through the `ITodoStore` interface: in-memory storage in Development, SQL Server (EF Core) in Production
+- `/News` page that lists articles from the News API and shows their details
 
 ## 📇 ContactApp
 
-- Kişi ekleme, listeleme, düzenleme ve silme (CRUD)
-- SQLite + EF Core ile kalıcı veri saklama
-- Data Annotations ve jQuery Validation ile istemci ve sunucu taraflı doğrulama
-- `/news` sayfasında News API'den gelen haberlerin listesi ve detayı
-- API'ye ulaşılamadığında uygulamanın çökmemesi için hata yakalama ve loglama
+- Create, list, edit and delete contacts (CRUD)
+- Persistent storage with SQLite + EF Core
+- Client-side and server-side validation with Data Annotations and jQuery Validation
+- `/news` page that lists articles from the News API and shows their details
+- Error handling and logging so the app keeps working when the API is unreachable
 
-Ayrıntılar için: [ContactApp/README.md](ContactApp/README.md)
+For more details, see [ContactApp/README.md](ContactApp/README.md).
 
-## 🛠️ Teknolojiler
+## 🛠️ Tech Stack
 
 - .NET 9, C#
 - ASP.NET Core Web API, MVC, Razor Pages
@@ -75,20 +75,20 @@ Ayrıntılar için: [ContactApp/README.md](ContactApp/README.md)
 - FluentValidation
 - Bootstrap 5
 
-## 🚀 Çalıştırma
+## 🚀 Getting Started
 
-**Gereksinimler:** .NET 9 SDK, SQL Server LocalDB (Visual Studio ile birlikte gelir)
+**Prerequisites:** .NET 9 SDK, SQL Server LocalDB (included with Visual Studio)
 
-### Visual Studio ile
+### With Visual Studio
 
-1. `ApiConsume.slnx` dosyasını açın.
-2. Çözüme sağ tıklayın → **Configure Startup Projects** → **Multiple startup projects** seçin.
-3. `News`, `TodoApp` ve `ContactApp` projelerinin üçünü de **Start** olarak ayarlayın.
-4. **https** profiliyle çalıştırın.
+1. Open `ApiConsume.slnx`.
+2. Right-click the solution → **Configure Startup Projects** → select **Multiple startup projects**.
+3. Set `News`, `TodoApp` and `ContactApp` to **Start**.
+4. Run with the **https** profile.
 
-### Komut satırı ile
+### From the command line
 
-Her projeyi ayrı bir terminalde çalıştırın. **News API önce başlatılmalıdır**, çünkü diğer iki uygulama haberleri ondan alır.
+Run each project in a separate terminal. **Start the News API first**, since the other two applications fetch news from it.
 
 ```bash
 dotnet run --project News --launch-profile https
@@ -96,19 +96,19 @@ dotnet run --project TodoApp --launch-profile https
 dotnet run --project ContactApp --launch-profile https
 ```
 
-Veritabanları ilk çalıştırmada otomatik olarak oluşturulur ve örnek verilerle doldurulur.
+The databases are created and filled with sample data automatically on first run.
 
-### Adresler
+### URLs
 
-| Proje | Adres |
+| Project | URL |
 |---|---|
 | News API (Swagger) | https://localhost:7080/swagger |
 | TodoApp | https://localhost:7226 |
 | ContactApp | https://localhost:7168 |
 
-İstemci uygulamaların bağlandığı API adresi `appsettings` dosyalarından değiştirilebilir (`TodoApp`: `NewsApi:BaseUrl`, `ContactApp`: `ApiBaseUrl`).
+The API address used by the client applications can be changed in their `appsettings` files (`TodoApp`: `NewsApi:BaseUrl`, `ContactApp`: `ApiBaseUrl`).
 
-## 📁 Proje Yapısı
+## 📁 Project Structure
 
 ```
 ApiConsume-Architecture/
