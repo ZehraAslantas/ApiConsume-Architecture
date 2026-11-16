@@ -32,7 +32,8 @@ namespace TodoApp.Pages.Todos
                 Title = item.Title,
                 Description = item.Description,
                 DueDate = item.DueDate,
-                IsDone = item.IsDone
+                IsDone = item.IsDone,
+                Priority=item.Priority
             };
             return Page();
         }
