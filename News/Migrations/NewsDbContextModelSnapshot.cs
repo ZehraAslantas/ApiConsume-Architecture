@@ -73,7 +73,7 @@ namespace News.Migrations
                         {
                             Id = 1,
                             AuthorName = "Developer Akademi",
-                            Content = "<p> Yapay zeka, medya kuruluşlarında içerik üretimini hızlandırmaya başladı",
+                            Content = "Yapay zeka, medya kuruluşlarında içerik üretimini hızlandırmaya başladı",
                             PublishedAt = new DateTime(2025, 1, 5, 9, 30, 0, 0, DateTimeKind.Utc),
                             Slug = "yapay-zeka-destekli-haber-uretimi",
                             Status = "Published",

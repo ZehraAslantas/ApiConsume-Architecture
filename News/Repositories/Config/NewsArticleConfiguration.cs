@@ -44,7 +44,7 @@ namespace News.Repositories.Config
                     Title = "Yapay Zeka Destekli Haber Üretimi",
                     Slug = "yapay-zeka-destekli-haber-uretimi",
                     Summary = "Yapay zeka destekli iş akışları dijital haber odalarını nasıl döndürüyor",
-                    Content = "<p> Yapay zeka, medya kuruluşlarında içerik üretimini hızlandırmaya başladı",
+                    Content = "Yapay zeka, medya kuruluşlarında içerik üretimini hızlandırmaya başladı",
                     PublishedAt = new DateTime(2025, 1, 5, 9, 30, 0, DateTimeKind.Utc),
                     Status=NewsStatus.Published,
                     AuthorName="Developer Akademi"
